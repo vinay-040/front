@@ -1,0 +1,132 @@
+{% extends 'base.html' %} {% block title %}My Orders{% endblock title %} {%
+block body %}
+<div class="container mt-5">
+  <h2>Your Orders</h2>
+  {% include "messages.html" %} {% if orders %}
+  <table class="table table-bordered mt-3">
+    <thead>
+      <tr>
+        <th>Order ID</th>
+        <th>Products</th>
+        <th>Total Price</th>
+        <th>Shipping Address</th>
+        <th>Date</th>
+        <th>Delivery Status</th>
+        <th>Cancel Order</th>
+        {% if current_user.isAdmin=='True' %}
+        <th>Mark as Delivered</th>
+       {% endif %}
+      </tr>
+    </thead>
+    <tbody>
+      {% for order in orders %}
+      <tr>
+        <td>{{ order.order_id }}</td>
+
+        <td>
+          {% for product in order.orderedproducts %}
+          <p>
+            {{ product['name'] }} - Quantity: {{ product['quantity'] }} - Price
+            {{product['price']}}
+          </p>
+          {% endfor %}
+        </td>
+        <td>{{ order.totalprice }}</td>
+        <td>
+          {{ order.address }}, {{ order.city }}, {{ order.state }}, {{
+          order.pincode }}
+        </td>
+        <td>{{ order.timeStamp }}</td>
+        <td>
+          {% if order.isDelivered == '0' %} Not Delivered
+          <i class="fa-solid fa-truck"></i>{% else %} Delivered
+          <i class="fa-solid fa-circle-check"></i> {% endif %}
+        </td>
+
+        <td>
+          <button
+            class="btn btn-light btn-lg"
+            onclick="deleteorder({{ order.order_id }})"
+          >
+            <i class="fa-solid fa-x" style="color: #d41616"></i>
+          </button>
+        </td>
+   {% if current_user.isAdmin=='True' %}
+        <td>
+          <button
+            class="btn btn-light btn-lg"
+            onclick="delivered({{ order.order_id }})"
+          >
+           <i class="fa-sharp fa-solid fa-circle-check"></i>
+          </button>
+        </td>
+
+             {% endif %}
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% else %}
+  <p>You have no orders.</p>
+  {% endif %}
+</div>
+{% endblock body %} {% block script %}
+
+<script>
+  function deleteorder(order_id) {
+    // Confirm before deleting
+    if (!confirm("Are you sure you want to delete this order?")) {
+      return;
+    }
+
+    fetch(`/deleteorder/${order_id}`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-CSRFToken': '{{ csrf_token() }}' // If CSRF protection is enabled
+      }
+    })
+    .then(response => response.json())
+    .then(data => {
+      if (data.success) {
+        
+        location.reload(); // Reloads the page to reflect changes
+      } else {
+      
+      }
+    })
+    .catch(error => {
+      console.error('Error:', error);
+      alert("An error occurred while trying to delete the order.");
+    });
+  }
+  function delivered(order_id) {
+    // Confirm before deleting
+    if (!confirm("Are you sure the order is delivered?")) {
+      return;
+    }
+
+
+    fetch(`/delivered/${order_id}`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-CSRFToken': '{{ csrf_token() }}' // If CSRF protection is enabled
+      }
+    })
+    .then(response => response.json())
+    .then(data => {
+      if (data.success) {
+        
+        location.reload(); // Reloads the page to reflect changes
+      } else {
+      
+      }
+    })
+    .catch(error => {
+      console.error('Error:', error);
+      alert("An error occurred while trying to delete the order.");
+    });
+  }
+</script>
+{% endblock script %}

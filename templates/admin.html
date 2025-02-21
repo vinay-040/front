@@ -1,0 +1,299 @@
+{% extends 'base.html' %} {% block title %} Admin {% endblock title %} {% block
+body %}
+
+<div class="container m-3">
+  <div class="row">
+    <div class="col-md-4">
+      {% include "messages.html" %}
+      <h2>Add Products</h2>
+      <form action="/addproduct" method="post" enctype="multipart/form-data">
+       <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+        <div class="form-group">
+          <input
+            class="form-control mb-2 p-3"
+            type="text"
+            name="pname"
+            required
+            id=""
+            placeholder="Enter Product Name"
+          />
+        </div>
+
+        <div class="form-group">
+          <input
+            class="form-control mb-2 p-3"
+            type="int"
+            name="price"
+            required
+            id=""
+            placeholder="Enter Product Price"
+          />
+        </div>
+
+        <div class="form-group">
+          <input
+            class="form-control mb-2 p-3"
+            type="text"
+            name="category"
+            required
+            id=""
+            placeholder="Enter Product Category"
+          />
+        </div>
+
+        <div class="form-group">
+          <textarea
+            class="form-control mb-2 p-3"
+            name="desc"
+            id=""
+            cols="5"
+            rows="5"
+            placeholder="Product Description"
+          ></textarea>
+        </div>
+
+        <div class="form-group">
+          <input
+            class="form-control mb-2 p-3"
+            type="int"
+            name="stock"
+            required
+            placeholder="Enter the number of stocks"
+          />
+        </div>
+
+        <div class="form-group">
+          <input
+            type="file"
+            class="form-control"
+            id="inputGroupFile04"
+            aria-describedby="inputGroupFileAddon04"
+            aria-label="Upload"
+            name="productpic"
+          />
+        </div>
+
+        <button class="btn btn-primary btnclr mt-2" type="submit">
+          Add Product
+        </button>
+      </form>
+    </div>
+    <div class="col-md-8">
+      <div
+        class="modal fade"
+        id="editModal"
+        tabindex="-1"
+        aria-labelledby="editModalLabel"
+        aria-hidden="true"
+      >
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h1 class="modal-title fs-5" id="editModalLabel">
+                Update Product
+              </h1>
+              <button
+                type="button"
+                class="btn-close"
+                data-bs-dismiss="modal"
+                aria-label="Close"
+              ></button>
+            </div>
+            <div class="modal-body">
+              <form
+                action="/addproduct"
+                method="post"
+                enctype="multipart/form-data"
+              >
+                <div class="form-group">
+                  <input
+                    class="form-control mb-2 p-3"
+                    type="text"
+                    name="pname"
+                    required
+                    id=""
+                    placeholder="Enter Product Name"
+                  />
+                </div>
+
+                <div class="form-group">
+                  <input
+                    class="form-control mb-2 p-3"
+                    type="int"
+                    name="price"
+                    required
+                    id=""
+                    placeholder="Enter Product Price"
+                  />
+                </div>
+
+                <div class="form-group">
+                  <input
+                    class="form-control mb-2 p-3"
+                    type="text"
+                    name="category"
+                    required
+                    id=""
+                    placeholder="Enter Product Category"
+                  />
+                </div>
+
+                <div class="form-group">
+                  <textarea
+                    class="form-control mb-2 p-3"
+                    name="desc"
+                    id=""
+                    cols="5"
+                    rows="5"
+                    placeholder="Product Description"
+                  ></textarea>
+                </div>
+
+                <div class="form-group">
+                  <input
+                    class="form-control mb-2 p-3"
+                    type="int"
+                    name="stock"
+                    required
+                    placeholder="Enter the number of stocks"
+                  />
+                </div>
+
+                <div class="form-group">
+                  <input
+                    type="file"
+                    class="form-control"
+                    id="inputGroupFile04"
+                    aria-describedby="inputGroupFileAddon04"
+                    aria-label="Upload"
+                    name="productpic"
+                  />
+                </div>
+              </form>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-primary btnclr mt-2"   onclick="updateProduct()">
+                Update
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <h3 class="text-center">Product List</h3>
+      <table class="table table-bordered table-dark p-3">
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Price</th>
+            <th>Category</th>
+            <th>Description</th>
+            <th>Stock</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for product in products %}
+          <tr>
+            <td>{{ product.name }}</td>
+            <td>Rs.{{ product.price }}</td>
+            <td>{{ product.category }}</td>
+            <td>{{ product.description }}</td>
+            <td>{{ product.stock }}</td>
+            <td>
+              <button
+                type="button"
+                class="btn btn-light"
+                data-id="{{ product.id }}"
+                data-bs-toggle="modal"
+                data-bs-target="#editModal"
+                onclick="fetchProductData(this)"
+              >
+                Edit
+              </button>
+
+              <a
+                href="{{ url_for('delete_product', product_id=product.id) }}"
+                class="btn btn-danger btn-sm"
+                onclick="return confirm('Are you sure you want to delete this product?')"
+                >Delete</a
+              >
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+{% endblock body %} {% block script %}
+
+<script>
+  async function fetchProductData(button) {
+    const productId = button.getAttribute("data-id");
+    document.querySelector("#editModal").setAttribute("data-id", productId); // Set product ID on the modal
+
+    try {
+      const response = await fetch(`/editproduct/${productId}`);
+      if (!response.ok) {
+        throw new Error("Failed to fetch product data");
+      }
+      const product = await response.json();
+
+      // Populate modal fields with product data
+      document.querySelector("#editModal input[name='pname']").value =
+        product.name;
+      document.querySelector("#editModal input[name='price']").value =
+        product.price;
+      document.querySelector("#editModal input[name='category']").value =
+        product.category;
+      document.querySelector("#editModal textarea[name='desc']").value =
+        product.description;
+      document.querySelector("#editModal input[name='stock']").value =
+        product.stock;
+    
+    } catch (error) {
+      console.error("Error fetching product data:", error);
+      alert("Could not fetch product details.");
+    }
+  }
+
+
+    async function updateProduct() {
+  
+   const productId = document.querySelector("#editModal").getAttribute("data-id"); // Get product ID from modal
+    console.log(productId)
+    const formData = new FormData();
+    formData.append("pname", document.querySelector("#editModal input[name='pname']").value);
+    formData.append("price", document.querySelector("#editModal input[name='price']").value);
+    formData.append("category", document.querySelector("#editModal input[name='category']").value);
+    formData.append("desc", document.querySelector("#editModal textarea[name='desc']").value);
+    formData.append("stock", document.querySelector("#editModal input[name='stock']").value);
+
+    try {
+      const response = await fetch(`/update_product/${productId}`, {
+        method: "POST",
+        body: formData,
+        headers: {
+      'X-CSRFToken': '{{ csrf_token() }}'  // Include CSRF token in the header
+    }
+      });
+      
+      
+      if (!response.ok) {
+        throw new Error("Failed to update product");
+      }
+
+      const result = await response.json();
+      alert(result.message);  // Notify the user of success
+
+      // Optional: Refresh the product list or close the modal
+      location.reload();  // Reload page to reflect changes
+    } catch (error) {
+      console.error("Error updating product:", error);
+      alert("Could not update product details.");
+    }
+  }
+</script>
+
+{% endblock script %}

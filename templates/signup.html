@@ -1,0 +1,105 @@
+{% extends 'base.html' %} {% block title %} Signup {% endblock title %} {% block
+corousel %}
+   <section id="hero" class="hero section">
+<div class="container">
+  <div class="row gy-4">
+    <div
+      class="col-md-6 order-2 order-md-1 d-flex flex-column justify-content-center"
+    >
+      <img
+        src="/static/assets/img/contact-bg.png"
+        class="img-fluid animated"
+        alt=""
+      />
+    </div>
+
+ 
+    <div class="col-md-5 order-1 order-md-2 hero-img">
+        {% include "messages.html" %}
+      <h3 class="text-center">Signup</h1>
+      <form action="/signup" method="post">
+       <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+        <div class="form-group">
+
+          <input
+            class="form-control mb-2 p-3"
+            type="text"
+            name="fname"
+            required
+            id=""
+            placeholder="Enter Your First Name"
+          />
+        </div>
+
+        <div class="form-group">
+<br>
+          <input
+            class="form-control mb-2 p-3"
+            type="text"
+            name="lname"
+            required
+            id=""
+            placeholder="Enter Your Last Name"
+          />
+        </div>
+
+        <div class="form-group">
+<br>
+          <input
+            class="form-control mb-2 p-3"
+            type="email"
+            name="email"
+            required
+            id=""
+            placeholder="Enter Your Email Address"
+          />
+        </div>
+
+        <div class="form-group">
+<br>
+          <input
+            class="form-control mb-2 p-3"
+            type="number"
+            name="mobile"
+            required
+            id=""
+            placeholder="Enter Your Mobile Number"
+          />
+        </div>
+
+        <div class="form-group">
+   <br>
+          <input
+            class="form-control mb-2 p-3"
+            type="password"
+            name="pass1"
+            required
+            id="pas1"
+            placeholder="Enter Your Password"
+          />
+        </div>
+        <div class="form-group">
+<br>
+          <input
+            class="form-control mb-2 p-3"
+            type="password"
+            name="pass2"
+            required
+            id=""
+            placeholder="Confirm Your Password"
+          />
+        </div>
+
+<br>
+        <div>
+          <a href="http://127.0.0.1:5000/login" style="color:rgb(255, 255, 255); text-decoration: none; font-weight: bold;"><h6>Already having account</h6></a>
+          </div>
+
+          <button class="btn btn-primary btnclr" type="submit">Submit</button>
+        
+      </form>
+    </div>
+  </div>
+</div>
+</section>
+{% endblock corousel %}

@@ -1,0 +1,339 @@
+{% extends 'base.html' %} {% block title %} Index {% endblock title %} {% block
+corousel %}
+<section id="hero" class="hero section">
+  <div class="container">
+    <div class="row gy-4">
+      <div
+        class="col-lg-6 order-2 order-lg-1 d-flex flex-column justify-content-center"
+      >
+        {% include "messages.html" %}
+        <h1>Grow your business with AIO</h1>
+        <p>We are team of great aspires</p>
+        
+      </div>
+      <div class="col-lg-6 order-1 order-lg-2 hero-img">
+        <img
+          src="/static/assets/img/hero-img.png"
+          class="img-fluid animated"
+          alt=""
+        />
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="portfolio" class="portfolio section">
+  <!-- Section Title -->
+  <div class="container section-title" data-aos="fade-up">
+    <nav class="navbar bg-body-tertiary">
+      <div class="container-fluid">
+        <a class="navbar-brand"> <h2>All Products</h2></a>
+        <form
+          class="d-flex position-relative"
+          role="search"
+          onsubmit="return false;"
+        >
+          <input
+            class="form-control me-2"
+            type="search"
+            placeholder="Search"
+            aria-label="Search"
+            id="product-search-input"
+            oninput="fetchMatchingProducts(this.value)"
+          />
+
+
+          <!-- Dropdown for displaying matching products -->
+          <ul
+            id="search-dropdown"
+            class="dropdown-menu position-absolute"
+            style="display: none"
+          >
+            <!-- Matching products will be dynamically populated here -->
+          </ul>
+        </form>
+      </div>
+    </nav>
+  </div>
+  <div class="container">
+    <div
+      class="isotope-layout"
+      data-default-filter="*"
+      data-layout="masonry"
+      data-sort="original-order"
+    >
+      <div id="product-results" class="row gy-4"></div>
+    </div>
+  </div>
+  <div class="container"  id="mainproducts">
+    <div
+      class="isotope-layout"
+      data-default-filter="*"
+      data-layout="masonry"
+      data-sort="original-order"
+    >
+      <ul
+        class="portfolio-filters isotope-filters"
+        data-aos="fade-up"
+        data-aos-delay="100"
+      >
+        <li data-filter="*" class="filter-active">All</li>
+        {% set unique_categories = products | map(attribute='category') | unique
+        %} {% for category in unique_categories %}
+        <li data-filter=".filter-{{ category | lower | replace(' ', '-') }}">
+          {{ category }}
+        </li>
+        {% endfor %}
+      </ul>
+      <!-- End Portfolio Filters -->
+
+      <div
+        class="row gy-4 isotope-container"
+        data-aos="fade-up"
+        data-aos-delay="200"
+      >
+        {% for product in products %}
+        <div
+          class="col-lg-4 col-md-6 portfolio-item isotope-item filter-{{ product.category | lower | replace(' ', '-') }}"
+        >
+          <div class="portfolio-content h-100">
+            <img
+              src="/static/uploads/{{ product.image }}"
+              class="img-fluid"
+              alt="{{ product.name }}"
+            />
+            <div class="portfolio-info">
+              <h4>{{ product.name }}</h4>
+              <p>{{ product.description }}</p>
+              <h6 class="text-white">Price : {{ product.price }}</h6>
+              <a
+                href="/static/uploads/{{ product.image }}"
+                title="{{ product.name }}"
+                data-gallery="portfolio-gallery-{{ product.category | lower | replace(' ', '-') }}"
+                class="glightbox preview-link"
+              >
+                <i class="bi bi-zoom-in"></i>
+              </a>
+              <button
+                id="add-to-cart-{{ product.id }}"
+                class="btn btn-primary add-to-cart"
+                onclick="addToCart('{{ product.id }}', '{{ product.name }}', '{{ product.price }}', '{{ product.image }}', {{ product.stock }})"
+              >
+                Add to Cart
+              </button>
+            </div>
+          </div>
+        </div>
+        <!-- End Portfolio Item -->
+        {% endfor %}
+      </div>
+      <!-- End Portfolio Container -->
+    </div>
+  </div>
+</section>
+
+{% endblock corousel %} {% block script %}
+
+<script>
+  // Function to add items to the cart and update the count
+  function addToCart(id, name, price, image, stock) {
+    let cart = JSON.parse(localStorage.getItem("cart")) || [];
+
+    // Find item in the cart
+    const index = cart.findIndex((item) => item.id === id);
+
+    if (index === -1) {
+      // If item is not in cart, add it with quantity of 1
+      cart.push({ id, name, price, image, quantity: 1, stock });
+      alert("Item added to cart!");
+    } else {
+      // If item is already in the cart, check if it can be incremented within stock limits
+      if (cart[index].quantity < stock) {
+        cart[index].quantity++;
+        alert("Increased quantity in cart!");
+      } else {
+        alert("Maximum stock reached!");
+      }
+    }
+
+    localStorage.setItem("cart", JSON.stringify(cart));
+    updateCartCount();
+    triggerCartHoverEffect();
+
+    const addToCartButton = document.getElementById(`add-to-cart-${id}`);
+    addToCartButton.innerText = "Added to Cart";
+    addToCartButton.classList.remove("btn-primary");
+    addToCartButton.classList.add("btn-success");
+    addToCartButton.disabled = true; // Optionally disable the button
+  }
+
+  // Function to trigger a hover effect on the Cart link
+  function triggerCartHoverEffect() {
+    const cartLink = document.getElementById("cart-link");
+    cartLink.classList.add("hover-effect");
+    setTimeout(() => {
+      cartLink.classList.remove("hover-effect");
+    }, 500);
+  }
+
+  // Function to display cart items in the dropdown
+  function displayCartItems() {
+    const cart = JSON.parse(localStorage.getItem("cart")) || [];
+    const cartDropdown = document.getElementById("cart-dropdown");
+    cartDropdown.innerHTML = ""; // Clear previous items
+
+    if (cart.length === 0) {
+      cartDropdown.innerHTML = `<li class="dropdown-item">Your cart is empty.</li>`;
+    } else {
+      cart.forEach((item, index) => {
+        const cartItem = document.createElement("li");
+        cartItem.classList.add("dropdown-item");
+        cartItem.innerHTML = `
+        <div class="d-flex align-items-center">
+          <img src="/static/uploads/${item.image}" alt="${item.name}" width="30" height="30" class="me-2">
+          <div>
+            <p class="mb-0">${item.name}</p>
+            <small>Price: ${item.price}</small>
+            <div class="d-flex align-items-center mt-1">
+              <button onclick="decrementItem(${index})" class="btn btn-sm btn-outline-secondary">-</button>
+              <span class="mx-2">${item.quantity}</span>
+              <button onclick="incrementItem(${index})" class="btn btn-sm btn-outline-secondary">+</button>
+            </div>
+          </div>
+        </div>
+      `;
+        cartDropdown.appendChild(cartItem);
+      });
+    }
+  }
+
+  function incrementItem(index) {
+    let cart = JSON.parse(localStorage.getItem("cart")) || [];
+    if (cart[index].quantity < cart[index].stock) {
+      cart[index].quantity++;
+      localStorage.setItem("cart", JSON.stringify(cart));
+      displayCartItems();
+      updateCartCount();
+    } else {
+      alert("Reached maximum stock for this item.");
+    }
+  }
+
+  function decrementItem(index) {
+    let cart = JSON.parse(localStorage.getItem("cart")) || [];
+    if (cart[index].quantity > 1) {
+      cart[index].quantity--;
+    } else {
+      // If quantity is 1 and we decrement, remove the item from the cart
+      const productId = cart[index].id;
+      cart.splice(index, 1); // Remove item from cart
+
+      // Reset the button back to "Add to Cart"
+      const addToCartButton = document.getElementById(
+        `add-to-cart-${productId}`
+      );
+      if (addToCartButton) {
+        addToCartButton.innerText = "Add to Cart";
+        addToCartButton.classList.remove("btn-success");
+        addToCartButton.classList.add("btn-primary");
+        addToCartButton.disabled = false; // Re-enable the button
+      }
+    }
+
+    // Save updated cart to localStorage and refresh cart display
+    localStorage.setItem("cart", JSON.stringify(cart));
+    displayCartItems();
+    updateCartCount();
+  }
+
+  function updateCartCount() {
+    const cart = JSON.parse(localStorage.getItem("cart")) || [];
+    const count = cart.reduce((total, item) => total + item.quantity, 0);
+    document.getElementById("cart-count").innerText = `(${count})`;
+  }
+
+  async function fetchMatchingProducts(query) {
+    const resultsContainer = document.getElementById("product-results");
+    const dropdown = document.getElementById("search-dropdown");
+    const maindiv = document.getElementById("mainproducts");
+
+    // Clear previous results and hide dropdown
+    resultsContainer.innerHTML = "";
+    dropdown.innerHTML = "";
+    dropdown.style.display = "none";
+
+    // Show dropdown only if there's a query
+if (query.trim() === "") {
+        maindiv.style.display = "block";
+        return;
+    }
+    
+    try {
+      const response = await fetch(
+        `/api/products?query=${encodeURIComponent(query)}`
+      );
+      if (!response.ok) throw new Error("Failed to fetch products");
+
+      const products = await response.json();
+      console.log(products);
+      maindiv.style.display = "none";
+
+      // Display matching products in the results container
+      if (products.length) {
+        products.forEach((product) => {
+          const productCard = document.createElement("div");
+          productCard.classList.add(
+            "col-lg-4",
+            "col-md-6",
+            "portfolio-item",
+            `filter-${product.category}`
+          );
+
+          productCard.innerHTML = `
+            <div class="portfolio-content h-100">
+              <img src="/static/uploads/${product.image}" class="img-fluid" alt="${product.name}" />
+              <div class="portfolio-info">
+                <h4>${product.name}</h4>
+                <p>${product.description}</p>
+                <h6 class="text-white">Price : ${product.price}</h6>
+                <a href="/static/uploads/${product.image}" title="${product.name}" data-gallery="portfolio-gallery-${product.category}" class="glightbox preview-link">
+                  <i class="bi bi-zoom-in"></i>
+                </a>
+                <button id="add-to-cart-${product.id}" class="btn btn-primary add-to-cart" onclick="addToCart('${product.id}', '${product.name}', '${product.price}', '${product.image}', ${product.stock})">
+                  Add to Cart
+                </button>
+              </div>
+            </div>`;
+
+          resultsContainer.appendChild(productCard);
+
+          // Optionally, also add items to dropdown
+          const dropdownItem = document.createElement("li");
+          dropdownItem.classList.add("dropdown-item");
+          dropdownItem.textContent = product.name;
+          dropdownItem.onclick = () => {
+            document.getElementById("product-search-input").value =
+              product.name;
+            dropdown.style.display = "none";
+          };
+          dropdown.appendChild(dropdownItem);
+        });
+
+        dropdown.style.display = "block";
+  
+      } else {
+        // Display no results message
+        resultsContainer.innerHTML = "<p>No matching products found.</p>";
+      }
+    } catch (error) {
+      console.error("Error fetching products:", error);
+      resultsContainer.innerHTML =
+        "<p>Error loading products. Please try again later.</p>";
+    }
+  }
+
+  // Initialize cart count on page load
+  document.addEventListener("DOMContentLoaded", updateCartCount);
+</script>
+
+{% endblock script%}
