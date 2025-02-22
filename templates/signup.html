@@ -1,105 +1,55 @@
-{% extends 'base.html' %} {% block title %} Signup {% endblock title %} {% block
-corousel %}
-   <section id="hero" class="hero section">
-<div class="container">
-  <div class="row gy-4">
-    <div
-      class="col-md-6 order-2 order-md-1 d-flex flex-column justify-content-center"
-    >
-      <img
-        src="/static/assets/img/contact-bg.png"
-        class="img-fluid animated"
-        alt=""
-      />
-    </div>
+{% extends 'base.html' %}
 
- 
-    <div class="col-md-5 order-1 order-md-2 hero-img">
+{% block title %} Signup {% endblock title %}
+
+{% block corousel %}
+<section id="hero" class="hero section" style="background: url('/static/assets/img/backgr.jpg') no-repeat center center/cover; min-height: 100vh; display: flex; align-items: center; justify-content: center;">
+  <div class="container">
+    <div class="row gy-4 align-items-center">
+      
+      <!-- <div class="col-md-6 order-2 order-md-1 d-flex justify-content-center">
+        <img src="/static/assets/img/book 2.jpg" class="img-fluid animated" alt="Signup Illustration" />
+      </div>
+         -->
+      <div class="col-md-5 order-1 order-md-2 hero-img p-4 bg-light shadow rounded" style="backdrop-filter: blur(8px); border-radius: 10px;">
         {% include "messages.html" %}
-      <h3 class="text-center">Signup</h1>
-      <form action="/signup" method="post">
-       <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-        <div class="form-group">
-
-          <input
-            class="form-control mb-2 p-3"
-            type="text"
-            name="fname"
-            required
-            id=""
-            placeholder="Enter Your First Name"
-          />
-        </div>
-
-        <div class="form-group">
-<br>
-          <input
-            class="form-control mb-2 p-3"
-            type="text"
-            name="lname"
-            required
-            id=""
-            placeholder="Enter Your Last Name"
-          />
-        </div>
-
-        <div class="form-group">
-<br>
-          <input
-            class="form-control mb-2 p-3"
-            type="email"
-            name="email"
-            required
-            id=""
-            placeholder="Enter Your Email Address"
-          />
-        </div>
-
-        <div class="form-group">
-<br>
-          <input
-            class="form-control mb-2 p-3"
-            type="number"
-            name="mobile"
-            required
-            id=""
-            placeholder="Enter Your Mobile Number"
-          />
-        </div>
-
-        <div class="form-group">
-   <br>
-          <input
-            class="form-control mb-2 p-3"
-            type="password"
-            name="pass1"
-            required
-            id="pas1"
-            placeholder="Enter Your Password"
-          />
-        </div>
-        <div class="form-group">
-<br>
-          <input
-            class="form-control mb-2 p-3"
-            type="password"
-            name="pass2"
-            required
-            id=""
-            placeholder="Confirm Your Password"
-          />
-        </div>
-
-<br>
-        <div>
-          <a href="http://127.0.0.1:5000/login" style="color:rgb(255, 255, 255); text-decoration: none; font-weight: bold;"><h6>Already having account</h6></a>
+        <h3 class="text-center text-primary">Signup</h3>
+        <form action="/signup" method="post" class="mt-3">
+          <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+          
+          <div class="form-group">
+            <input class="form-control mb-3 p-3" type="text" name="fname" required placeholder="First Name" />
           </div>
-
-          <button class="btn btn-primary btnclr" type="submit">Submit</button>
-        
-      </form>
+          
+          <div class="form-group">
+            <input class="form-control mb-3 p-3" type="text" name="lname" required placeholder="Last Name" />
+          </div>
+          
+          <div class="form-group">
+            <input class="form-control mb-3 p-3" type="email" name="email" required placeholder="Email Address" />
+          </div>
+          
+          <div class="form-group">
+            <input class="form-control mb-3 p-3" type="number" name="mobile" required placeholder="Mobile Number" />
+          </div>
+          
+          <div class="form-group">
+            <input class="form-control mb-3 p-3" type="password" name="pass1" required placeholder="Password" />
+          </div>
+          
+          <div class="form-group">
+            <input class="form-control mb-3 p-3" type="password" name="pass2" required placeholder="Confirm Password" />
+          </div>
+          
+          <div class="text-center mb-3">
+            <a href="/login" class="text-primary" style="text-decoration: none; font-weight: bold; transition: 0.3s;">Already have an account?</a>
+          </div>
+          
+          <button class="btn btn-primary btn-lg w-100" type="submit">Sign Up</button>
+        </form>
+      </div>
+      
     </div>
   </div>
-</div>
 </section>
 {% endblock corousel %}
