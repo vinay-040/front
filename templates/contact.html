@@ -1,54 +1,37 @@
-{% extends 'base.html' %} {% block title %} Contact {% endblock title %} {% block
+{% extends 'base1.html' %} {% block title %} Contact {% endblock title %} {% block
     corousel %}
     <section id="hero" class="hero section">
     
     <div class="container">
       <div class="row gy-4">
-        <div
-          class="col-md-6 order-2 order-md-1 d-flex flex-column justify-content-center"
-        >
-          <img
-              src="/static/assets/img/contact-bg.png"
-            class="img-fluid animated"
-            alt=""
-          />
+       
         </div>
     
      
-        <div class="col-md-5 order-1 order-md-2 hero-img">
-            {% include "messages.html" %}
-          <h3 class="text-center">Contact</h1>
+        <div class="container" data-aos="fade-up">
         
-
-            <form action="/contact" method="post">
- <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-                <div class="form-group">
-                    <input class="form-control mb-2 p-3" type="email" name="email" placeholder="Enter  Email" required>
+            <div class="col-lg-8 order-lg-1">
+              <h2 class="text-center">Get in Touch</h2>
+              <p class="text-center">We'd love to hear from you! Fill out the form below to get in touch.</p>
+              {% include "messages.html" %}
+              <form action="/contact" method="post" class="p-4 rounded shadow bg-light">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                <div class="mb-3">
+                  <input type="email" class="form-control p-3" name="email" placeholder="Enter your email" required>
                 </div>
-             
-               <div class="form-group">
-                <textarea name="desc" id="" class="form-control m-2" cols="10" placeholder="How can i help you?" rows="10" required></textarea>
-               </div>
-             
-        <br>
-        <div class="d-grid gap-3">
-            <button class="btn btn-primary btnclr" type="submit">Submit</button>
-           
+                <div class="mb-3">
+                  <textarea class="form-control p-3" name="desc" rows="5" placeholder="How can we help you?" required></textarea>
+                </div>
+                <div class="d-grid">
+                  <button type="submit" class="btn btn-primary">Submit</button>
+                </div>
+              </form>
+            </div>
           </div>
-        
-        
-        
-        
-        
-            </form>
-        
-
-
-
-
         </div>
-      </div>
-    </div>
-      </section><!-- /Hero Section -->
+        <div class="col-lg-5 order-lg-2">
+          <img src="/static/assets/img/contact.jpg" class="img-fluid" alt="Contact Image" style="max-width: 80%; height: auto;">
+        </div>
+      </section>
     {% endblock corousel %}
     

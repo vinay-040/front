@@ -5,8 +5,7 @@
   <meta charset="utf-8">
   <meta content="width=device-width, initial-scale=1.0" name="viewport">
   <title>
-{% block title %}
-{% endblock title %}
+{% block title %}{% endblock title %}
   </title>
   <meta name="description" content="">
   <meta name="keywords" content="">
@@ -26,6 +25,19 @@
   <!-- Main CSS File -->
   <link href="/static/assets/css/main.css" rel="stylesheet">
   <meta name="csrf-token" content="{{ csrf_token() }}"> 
+  <style>
+    .contact-img {
+      max-width: 100%;
+      height: auto;
+      object-fit: cover;
+    }
+    .contact-form {
+      padding: 2rem;
+      border-radius: 10px;
+      background-color: #f8f9fa;
+      box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+    }
+  </style>
 </head>
 
 <body class="index-page">
@@ -37,41 +49,16 @@
       <nav id="navmenu" class="navmenu">
         <ul>
           <li><a href="/" class="active">Home</a></li>
-          <li class="nav-item dropdown">
-            <a href="#" class="nav-link" id="cart-link" onmouseover="displayCartItems()" data-bs-toggle="dropdown">
-              <i class="fa-solid fa-cart-shopping"></i> Cart <span id="cart-count">(0)</span>
-            </a>
-            <ul class="dropdown-menu" aria-labelledby="cart-link" id="cart-dropdown">
-              <li class="dropdown-item">Your cart is empty.</li>
-            </ul>
-          </li>
-          <li><a href="/checkout">Checkout</a></li>
-          <li><a href="/orders">Orders</a></li>
-          {% if current_user.is_authenticated %}
-          <li class="dropdown">
-            <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">
-              <i class="fa-solid fa-user"></i> Welcome {{ current_user.first_name }}
-            </a>
-            <ul class="dropdown-menu">
-              <li><a href="/logout" class="dropdown-item">Logout</a></li>
-            </ul>
-          </li>
-          {% endif %}
+          <li><a href="/contact">Contact</a></li>
         </ul>
         <i class="mobile-nav-toggle d-xl-none bi bi-list"></i>
       </nav>
-      <a class="btn-getstarted" href="/contact">Contact</a>
-      {% if current_user.isAdmin=='True' %}
-      <a class="btn-getstarted" href="/admin">Admin</a>
-      {% endif %}
     </div>
   </header>
-
   <main class="main">
     {% block corousel %}{% endblock corousel %}
     {% block body %}{% endblock body %}
   </main>
-
   <footer id="footer" class="footer">
     <div class="container">
       <div class="copyright text-center">
@@ -88,14 +75,9 @@
 
   <!-- Vendor JS Files -->
   <script src="/static/assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
-  <script src="/static/assets/vendor/php-email-form/validate.js"></script>
   <script src="/static/assets/vendor/aos/aos.js"></script>
   <script src="/static/assets/vendor/glightbox/js/glightbox.min.js"></script>
-  <script src="/static/assets/vendor/purecounter/purecounter_vanilla.js"></script>
   <script src="/static/assets/vendor/swiper/swiper-bundle.min.js"></script>
-  <script src="/static/assets/vendor/imagesloaded/imagesloaded.pkgd.min.js"></script>
-  <script src="/static/assets/vendor/isotope-layout/isotope.pkgd.min.js"></script>
   <script src="/static/assets/js/main.js"></script>
-  {% block script %}{% endblock script %}
 </body>
 </html>
