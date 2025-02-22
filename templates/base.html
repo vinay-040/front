@@ -47,6 +47,7 @@
           </li>
           <li><a href="/checkout">Checkout</a></li>
           <li><a href="/orders">Orders</a></li>
+          <li><a href="/contact">Contact</a></li>
           {% if current_user.is_authenticated %}
           <li class="dropdown">
             <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">
@@ -60,7 +61,7 @@
         </ul>
         <i class="mobile-nav-toggle d-xl-none bi bi-list"></i>
       </nav>
-      <a class="btn-getstarted" href="/contact">Contact</a>
+    
       {% if current_user.isAdmin=='True' %}
       <a class="btn-getstarted" href="/admin">Admin</a>
       {% endif %}
